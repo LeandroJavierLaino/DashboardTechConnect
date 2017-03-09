@@ -9,9 +9,7 @@
 	table {text-align:center; border-collapse: collapse; font-family: arial;white-space: nowrap;}
 	.headTable{ font-weight: bold;}
 	tr:hover{background-color: #9999ff}
-	table tr.active {background: #ffff00}
-	table tr.done {background: #00ff00}
-	table tr.stoped {background: #ff0000}
+	table tr.active {background: #9999ff}
 </style>
 <script src="xls.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.2/jquery.min.js"></script>
@@ -56,18 +54,17 @@
 		            var sCSV = XLS.utils.make_csv(wb.Sheets[sheetName]);   
 		            var data = XLS.utils.sheet_to_json(wb.Sheets[sheetName], {header:1});   
 		            $.each(data, function( indexR, valueR ) {
-		                var sRow = "<tr class='' id='" + indexR + "'";
+		                var sRow = "<tr class=''>";
 		                if( indexR == 0 ){
-		                	sRow = sRow + ">";
 		                	$.each(data[indexR], function( indexC, valueC ) {
 		                  	  sRow = sRow + "<td class='headTable' style='align-text:center'>" + valueC +"</td>";
 		                	});                
 		                }
 		                else{
-		                sRow = sRow + " onclick='marcar("+ indexR + ")'>";	
 		                $.each(data[indexR], function( indexC, valueC ) {
 		                    sRow = sRow + "<td>" + valueC + "</td>";
 		                });
+		                sRow = sRow + "<td> <input type='button' value='Marcar'/> </td>"
 		                sRow = sRow + "</tr>";
 		                }
 		                $("#my_file_output").append(sRow);
@@ -101,55 +98,13 @@
 			  }
 			}
 		</script>
-		<script>
-			function searchTicket() {
-			  // Declare variables 
-			  var input, filter, table, tr, td, i;
-			  input = document.getElementById("ticket");
-			  filter = input.value.toUpperCase();
-			  table = document.getElementById("my_file_output");
-			  tr = table.getElementsByTagName("tr");
-
-			  // Loop through all table rows, and hide those who don't match the search query
-			  for (i = 1; i < tr.length; i++) {
-			    td = tr[i].getElementsByTagName("td")[1];
-			    if (td) {
-			      if (td.innerHTML.toUpperCase().indexOf(filter) > -1) {
-			        tr[i].style.display = "";
-			      } else {
-			        tr[i].style.display = "none";
-			      }
-			    } 
-			  }
-			}
-		</script>
 		<input type="file" id="my_file_input" />
 		<input type="text" id="tecnico" onkeyup="filtro()" placeholder="Filtro por Tecnico ...">
-		<input type="text" id="ticket" onkeyup="searchTicket()" placeholder="Buscar Ticket ...">
 		<table id='my_file_output' >
 			<script type="text/javascript">
-				function marcar(id){
-					var clase;
-					clase = document.getElementById(id).className;
-					if ( clase != "active" && clase != "stoped" && clase != "done") {
-						document.getElementById(id).className = "active";
-					}
-					else{
-						if (clase == "active") {
-							document.getElementById(id).className = "stoped";
-						}
-						else{
-							if (clase == "stoped") {
-								document.getElementById(id).className = "done";
-							}
-							else{
-								if (clase == "done") {
-									document.getElementById(id).className = "white";
-								}
-							}
-						}
-					}					
-				}
+				$('tr').click(function() {
+			    	$(this).toggleClass('active');
+				});
 			</script>
 		</table>
 	</div>
