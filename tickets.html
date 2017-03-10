@@ -13,17 +13,16 @@
 	table tr.done {background: #00ff00}
 	table tr.stoped {background: #ff0000}
 </style>
-<script src="xls.js"></script>
+    <!-- Bootstrap -->
+<link rel="stylesheet" href="assets/lib/bootstrap/css/bootstrap.css">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.2/jquery.min.js"></script>
 <script src="http://code.jquery.com/jquery-latest.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.8.0/xlsx.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.8.0/jszip.js"></script>
-<script src="shim.js"></script>
 <head>
 	<title>Tickets</title>
 </head>
 <body scrolling="yes">
-<tr onclick="funcion(this)"></tr>
 <div>
 	<div>
 		
@@ -56,15 +55,19 @@
 		            var sCSV = XLS.utils.make_csv(wb.Sheets[sheetName]);   
 		            var data = XLS.utils.sheet_to_json(wb.Sheets[sheetName], {header:1});   
 		            $.each(data, function( indexR, valueR ) {
-		                var sRow = "<tr class='' id='" + indexR + "'";
+		                var sRow = "<tr class='white' id='" + indexR + "'";
 		                if( indexR == 0 ){
 		                	sRow = sRow + ">";
+		                	sRow = sRow + "<td class='headTable'> DONE </td>";
+		                	sRow = sRow + "<td class='headTable'> START/STOP </td>";
 		                	$.each(data[indexR], function( indexC, valueC ) {
 		                  	  sRow = sRow + "<td class='headTable' style='align-text:center'>" + valueC +"</td>";
 		                	});                
 		                }
 		                else{
-		                sRow = sRow + " onclick='marcar("+ indexR + ")'>";	
+		                sRow = sRow + " >";
+		                sRow = sRow + "<td><button class='glyphicon glyphicon-ok' onclick='done(" + indexR + ")'></button></td>";		                
+		                sRow = sRow + "<td><button class='glyphicon glyphicon-play' onclick='marcar(" + indexR + ")'></button></td>";	
 		                $.each(data[indexR], function( indexC, valueC ) {
 		                    sRow = sRow + "<td>" + valueC + "</td>";
 		                });
@@ -90,7 +93,7 @@
 
 			  // Loop through all table rows, and hide those who don't match the search query
 			  for (i = 1; i < tr.length; i++) {
-			    td = tr[i].getElementsByTagName("td")[9];
+			    td = tr[i].getElementsByTagName("td")[11];
 			    if (td) {
 			      if (td.innerHTML.toUpperCase().indexOf(filter) > -1) {
 			        tr[i].style.display = "";
@@ -112,7 +115,7 @@
 
 			  // Loop through all table rows, and hide those who don't match the search query
 			  for (i = 1; i < tr.length; i++) {
-			    td = tr[i].getElementsByTagName("td")[1];
+			    td = tr[i].getElementsByTagName("td")[3];
 			    if (td) {
 			      if (td.innerHTML.toUpperCase().indexOf(filter) > -1) {
 			        tr[i].style.display = "";
@@ -123,7 +126,10 @@
 			  }
 			}
 		</script>
-		<input type="file" id="my_file_input" />
+		<button class="btn btn-default btn-lg">
+			<label for="my_file_input" class="glyphicon glyphicon-file"></label>
+			<input type="file" style="display:none" id="my_file_input"></input>
+		</button>
 		<input type="text" id="tecnico" onkeyup="filtro()" placeholder="Filtro por Tecnico ...">
 		<input type="text" id="ticket" onkeyup="searchTicket()" placeholder="Buscar Ticket ...">
 		<table id='my_file_output' >
@@ -131,23 +137,25 @@
 				function marcar(id){
 					var clase;
 					clase = document.getElementById(id).className;
-					if ( clase != "active" && clase != "stoped" && clase != "done") {
-						document.getElementById(id).className = "active";
-					}
-					else{
-						if (clase == "active") {
-							document.getElementById(id).className = "stoped";
+						if ( clase != "active" && clase != "done") {
+							document.getElementById(id).className = "active";
 						}
 						else{
-							if (clase == "stoped") {
-								document.getElementById(id).className = "done";
+							if (clase == "active" && clase != "done") {
+								document.getElementById(id).className = "stoped";
 							}
-							else{
-								if (clase == "done") {
-									document.getElementById(id).className = "white";
-								}
-							}
-						}
+
+						}					
+				}
+
+				function done(id){
+					var clase;
+					clase = document.getElementById(id).className;					
+					if(clase != "done"){
+						document.getElementById(id).className = "done";	
+					}
+					else{
+						document.getElementById(id).className = "white";
 					}					
 				}
 			</script>
